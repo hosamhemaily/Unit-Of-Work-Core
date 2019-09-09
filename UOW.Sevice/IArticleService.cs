@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using UOW.DAL.Models;
 using UOW.Model;
 
 namespace UOW.Sevice
 {
      public interface IArticleService
     {
-        Task AddArticle(ArticleModel article);
+        Task AddArticleFlat(ArticleModel article);
 
         Task AddArticleTransaction(ArticleModel article);
 
         Task AddArticleTransactionWithAnotherTable(ArticleModel article);
-        IEnumerable<ArticleModel> Get();
+        
+        IEnumerable<ArticleModel> GetData(ArticleFilter articleFilter);
+
+        Task<ArticleModel> GetById(int id);
     }
 }

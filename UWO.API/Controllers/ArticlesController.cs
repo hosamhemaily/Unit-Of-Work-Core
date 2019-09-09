@@ -20,10 +20,10 @@ namespace UWO.API.Controllers
         }
 
         // GET api/values/5
-        [HttpGet()]
-        public List<ArticleModel> Get()
+        [HttpGet("[action]")]
+        public async Task<List<ArticleModel>> Get(ArticleFilter articleFilter)
         {
-            var result = _articleService.Get();
+            var result = await  _articleService.GetData(articleFilter);
             return result.ToList();
         }
 
@@ -31,7 +31,7 @@ namespace UWO.API.Controllers
         [HttpPost("[action]")]
         public async Task<int> Add()
         {
-            await _articleService.AddArticle(new ArticleModel { Name="test"});
+            await _articleService.AddArticleFlat(new ArticleModel { Name="test"});
             return 1;
         }
 

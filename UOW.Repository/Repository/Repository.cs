@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using UOW.DAL.Models;
@@ -32,14 +33,31 @@ namespace UOW.Repository.Concrete
             Context.Remove(entity);
         }
 
-        public IEnumerable<T> Get()
-        {
-            return Context.Set<T>();
+        public IQueryable<T> GetWithFilter(Expression<Func<T, bool>> predicate=null)
+        {            
+            return  Context.Set<T>().Where(predicate).AsQueryable(); 
         }
 
-        public IEnumerable<T> Get(System.Linq.Expressions.Expression<Func<T, bool>> predicate)
+        public IQueryable<T> GetWithPaging(int PageIndex, int PageSize, int PageCount,IQueryable<T> query)
         {
-            return Context.Set<T>().Where(predicate).AsEnumerable();
+            if (PageSize == 0)
+            {
+                return query;
+            }
+            else
+            {
+                //var result = Context.Set<T>().Where(predicate).AsQueryable();
+                int countForSkip = (PageIndex) * PageSize;
+                var r2 = query.Skip(countForSkip).Take(PageSize);
+                return r2;
+            }
+
+        }
+
+        public async Task<T> GetById(int id)
+        {
+            var result = await Context.Set<T>().FindAsync(id);
+            return result;
         }
 
         public void Update(T entity)
@@ -47,5 +65,8 @@ namespace UOW.Repository.Concrete
             Context.Entry(entity).State = EntityState.Modified;
             Context.Set<T>().Attach(entity);
         }
+
+       
+        
     }
 }
