@@ -12,16 +12,17 @@ namespace UOW.Sevice
 {
     public class ArticleService : BaseService,IArticleService
     {
+        #region Constructor
         public ArticleService(IUnitOfWork _unitOfWork) :base(_unitOfWork)
         { 
             
         }
+        #endregion
 
         public async Task AddArticleFlat(ArticleModel article)
         {           
             await  _unitOfWork.GetRepository<Articles>().Add(new Articles { Title = article.Name });
-            await _unitOfWork.SaveChangesAsync();
-            
+            await _unitOfWork.SaveChangesAsync();            
         }
 
         public async Task AddArticleTransaction(ArticleModel article)
@@ -47,14 +48,16 @@ namespace UOW.Sevice
             return new ArticleModel { Name = result.Title };
         }
 
-        public IEnumerable<ArticleModel> GetData(ArticleFilter articleFilter)
+        public async Task<IEnumerable<ArticleModel>> GetData(ArticleFilter articleFilter)
         {
             var query = GetWithFilter(articleFilter);
             var dataWithPaging =  GetWithPaging(articleFilter, query);
-            return dataWithPaging.Select(x => new ArticleModel { Name = x.Name });
+            return await dataWithPaging.ToAsyncEnumerable().Select(x => new ArticleModel { Name = x.Name }).ToList();
 
         }
 
+
+        #region private functions
         private IQueryable<Articles> GetWithFilter(ArticleFilter articleFilter)
         {
             var repository = _unitOfWork.GetRepository<Articles>();
@@ -75,9 +78,9 @@ namespace UOW.Sevice
 
         private IEnumerable<ArticleModel> GetWithPaging(ArticleFilter articleFilter, IQueryable<Articles> query)
         {
-            _unitOfWork.GetRepository<Articles>().GetWithPaging(articleFilter.PageIndex,articleFilter.PageSize,
-                0 ,query);
+            _unitOfWork.GetRepository<Articles>().GetWithPaging(articleFilter.PageIndex,articleFilter.PageSize,0,query);
             return query.Select(x => new ArticleModel { Name = x.Title }).ToList();
         }
+        #endregion
     }
 }

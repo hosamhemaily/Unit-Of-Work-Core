@@ -10,19 +10,13 @@ namespace UOW.Repository.Concrete
 {
     public class UnitOfWork : IUnitOfWork
     {
-
         public GoldhayAdminContext Context;
         private Dictionary<Type, object> _repositories = new Dictionary<Type, object>();
         IDbContextTransaction _dbTransaction;
 
-        //public IRepository<T> Repo { get; }
-
-        
-
         public UnitOfWork(GoldhayAdminContext _context)
         {
             Context = _context;
-            //Repo = repo;
         }
 
         public async Task<int> SaveChangesAsync()
@@ -38,21 +32,7 @@ namespace UOW.Repository.Concrete
             }
             
                 
-        }
-
-        //public IRepository<Articles> articles
-        //{
-        //    get { return GetRepository(); }
-        //}
-
-        //public IRepository<T> GetRepository()
-        //{
-        //    var type = typeof(T);
-        //    if (!_repositories.ContainsKey(type))
-        //        _repositories.Add(type, new Repository<T>(Repo.Context));
-        //    return (Repository<T>)_repositories[type];
-        //}
-
+        }        
 
         public IRepository<T> GetRepository<T>()
         where T : class
@@ -85,32 +65,6 @@ namespace UOW.Repository.Concrete
         {
             _dbTransaction.Rollback();
         }
-
-
-        //public Repository<T> GetRepository<T>() where T : class
-        //{
-        //    var type = typeof(T);
-        //    if (!_repositories.ContainsKey(type))
-        //        _repositories.Add(type, new Repository<T>(Context));
-        //    return (Repository<T>)_repositories[type];
-        //}
-
-        //IRepository<T> IUnitOfWork<T>.GetRepository<T>()
-        //{
-        //    var type = typeof(T);
-        //    if (!_repositories.ContainsKey(type))
-        //        _repositories.Add(type, new Repository<T>(Context));
-        //    return (Repository<T>)_repositories[type];
-        //}
-
-        //public Repository<Articles> arts
-        //{
-        //    get { return GetRepository<Articles>(); }
-        //}
-
-        //public void Dispose()
-        //{
-        //    //Context.Dispose();
-        //}
+        
     }
 }

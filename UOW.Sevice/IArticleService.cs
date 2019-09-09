@@ -16,7 +16,7 @@ namespace UOW.Sevice
 
         Task AddArticleTransactionWithAnotherTable(ArticleModel article);
         
-        IEnumerable<ArticleModel> GetData(ArticleFilter articleFilter);
+        Task<IEnumerable<ArticleModel>> GetData(ArticleFilter articleFilter);
 
         Task<ArticleModel> GetById(int id);
     }
